@@ -1,6 +1,7 @@
 import { Express } from 'express';
-import { createUserSessionHandler } from './controllers/session.controller';
+import { createUserSessionHandler, getUserSessionsHandler } from './controllers/session.controller';
 import { createUserHandler } from './controllers/user.controller';
+import { requireUser } from './middleware/authentication.middleware';
 import { validateResource } from './middleware/validation.middleware';
 import { createUserSessionValidator } from './validation/session.validation';
 import { createUserValidator} from './validation/user.validation';
@@ -16,4 +17,5 @@ function userRoutes(app: Express) {
 
 function sessionRoutes(app: Express) { 
     app.post('/api/sessions/create', validateResource(createUserSessionValidator), createUserSessionHandler);
+    app.get('/api/sessions/get', requireUser, getUserSessionsHandler)
 }

@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import config from 'config';
 import { omit } from "lodash";
-import { UserModel, UserInput } from "../models/user.model";
+import { FilterQuery } from 'mongoose';
+import { UserModel, UserInput, User } from "../models/user.model";
 
 export async function createUser(inputUser: Omit<UserInput, 'passwordConfirmation'>) {
     try {
@@ -11,6 +12,10 @@ export async function createUser(inputUser: Omit<UserInput, 'passwordConfirmatio
     } catch(err: any) {
         throw new Error(err);
     }
+}
+
+export async function getUser(query: FilterQuery<User>) {
+    return UserModel.findOne(query).lean();
 }
 
 export async function validateUserPassword({ username, password }: {username: string; password: string;}) {
