@@ -1,5 +1,5 @@
 import { Request, Response} from 'express';
-import { createSession, getSessions } from '../services/session.service';
+import { createSession, getSessions, setSessionCookies } from '../services/session.service';
 import { validateUserPassword } from '../services/user.service';
 
 export async function createUserSessionHandler(req: Request, res: Response) {
@@ -12,8 +12,10 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
     const session = await createSession(user._id, req.get('user-agent') || '');
 
-    // return tokens
-    return res.send(session);
+    setSessionCookies(res, session);
+
+    //cookies set, return success
+    return res.send();
 }
 
 export async function getUserSessionsHandler(req: Request, res: Response) {

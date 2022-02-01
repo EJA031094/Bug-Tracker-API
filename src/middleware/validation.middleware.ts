@@ -5,6 +5,7 @@ import { AnyZodObject } from 'zod';
 export function validateResource(schema: AnyZodObject){
     return (req: Request, res: Response, next: NextFunction) => {
         try {
+            console.log(req.body)
             schema.parse({
                 body: req.body,
                 query: req.query,
@@ -13,7 +14,8 @@ export function validateResource(schema: AnyZodObject){
     
             next();
         } catch (e: any) {
+            console.log(e.errors)
             return res.status(400).send(e.errors);
         }
     };
-} 
+}  
