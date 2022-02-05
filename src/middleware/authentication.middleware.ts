@@ -7,23 +7,17 @@ import { signJwt, verifyJwt } from '../utilities/jwtutil';
 
 export async function deserializeCookie(req: Request, res: Response, next: NextFunction) {
     try {
-        console.log(req.cookies);
         const accessToken = req.cookies['access-token-header-payload'] + '.' + req.cookies['access-token-signature'];
         const refreshToken = req.cookies['refresh-token'];
-    
-        console.log('deserialized atoken: ', accessToken,'\ndeserialized ftoken: ', refreshToken);
-    
-        if(accessToken) {
-            req.headers['authorization'] = accessToken;
-        }
-    
-        if(refreshToken) {
-            req.headers['x-refresh'] = refreshToken;
-        }
-        next();
+
+        req.headers['authorization'] = accessToken;
+        req.headers['x-refresh'] = refreshToken;
+
+        return next();
     } catch(err: any) {
         console.log(err.message)
-        next();
+        
+        return next();
     }
 }
 

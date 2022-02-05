@@ -1,8 +1,9 @@
 import { Request, Response} from 'express';
 import { createSession, getSessions, setSessionCookies } from '../services/session.service';
 import { validateUserPassword } from '../services/user.service';
+import { CreateUserSessionInput } from '../validation/session.validation';
 
-export async function createUserSessionHandler(req: Request, res: Response) {
+export async function createUserSessionHandler(req: Request<{}, {}, CreateUserSessionInput['body']>, res: Response) {
     //test password
     const user = await validateUserPassword(req.body);
 

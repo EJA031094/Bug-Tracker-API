@@ -42,6 +42,6 @@ export function setSessionCookies(res: Response, session: { accessToken: string,
 
     res.cookie('refresh-token', session.refreshToken, { 
         httpOnly: true,
-        maxAge: 6120 * 1000 //2 hours
+        maxAge: 7200 * 1000 //2 hours
     });
 }
