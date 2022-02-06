@@ -1,8 +1,8 @@
-import config from "config";
+import config from 'config';
 import { Response } from 'express';
-import { FilterQuery, UpdateQuery } from "mongoose";
-import SessionModel, { Session } from "../models/session.model";
-import { signJwt } from "../utilities/jwtutil";
+import { FilterQuery, UpdateQuery } from 'mongoose';
+import SessionModel, { Session } from '../models/session.model';
+import { signJwt } from '../utilities/jwtutil';
 
 export async function createSession(user: string, userAgent: string) {
     const session = await SessionModel.create({user, valid: true, userAgent});

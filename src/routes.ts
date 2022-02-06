@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import { createProjectHandler } from './controllers/project.controller';
+import { createProjectHandler, getProjectByIdHandler, getPublicProjectsHandler } from './controllers/project.controller';
 import { createUserSessionHandler, getUserSessionsHandler } from './controllers/session.controller';
 import { createUserHandler } from './controllers/user.controller';
 import { requireUser } from './middleware/authentication.middleware';
@@ -22,7 +22,7 @@ function sessionRoutes(app: Express) {
     app.post('/api/sessions/create', 
     validateResource(createUserSessionValidator), 
     createUserSessionHandler);
-    
+
     app.get('/api/sessions/get', requireUser, getUserSessionsHandler)
 }
 
@@ -31,4 +31,8 @@ function projectRoutes(app: Express) {
     validateResource(createProjectValidator), 
     requireUser, 
     createProjectHandler);
+
+    
+    app.get('/api/projects/getById', getProjectByIdHandler);
+    app.get('/api/projects/getPublic', getPublicProjectsHandler);
 }
