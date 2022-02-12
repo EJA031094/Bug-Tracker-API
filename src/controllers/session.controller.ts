@@ -18,7 +18,7 @@ export async function createUserSessionHandler(req: Request<{}, {}, CreateUserSe
 
         return res.send();
     } catch (err: any) {
-        console.log(err.message);
+        console.log(err);
         return res.status(500).send();
     }
 }
@@ -31,7 +31,7 @@ export async function getUserSessionsHandler(req: Request, res: Response) {
         
         return res.send(sessions);
     } catch(err: any) {
-        console.log(err.message);
+        console.log(err);
         return res.status(500).send();
     }
 }

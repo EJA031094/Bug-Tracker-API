@@ -1,8 +1,12 @@
-import ProjectModel from '../models/project.model';
+import ProjectModel, { Project } from '../models/project.model';
 import mongoose from 'mongoose';
+import { getUser } from './user.service';
 
 export async function createProject(owner: string, name: string, description: string, isPublic: boolean) {
-    const project = await ProjectModel.create({ owner, name, description, isPublic });
+    const ownerName = (await getUser({_id: owner}))?.username;
+
+
+    const project = await ProjectModel.create({ owner, ownerName, name, description, isPublic });
 
     return project;
 }

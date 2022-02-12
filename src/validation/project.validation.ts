@@ -6,7 +6,7 @@ export const createProjectValidator = object({
             required_error: 'Project name is required.'
         }).min(6, 'Project name should be a minimum of 6 characters.'),
         description: string({
-            required_error: 'Password is required.'
+            required_error: 'A description of your project is required.'
         }).max(250, 'Please limit your description to 250 characters.'),
         isPublic: boolean({
             invalid_type_error: 'isPublic must be a boolean value.'

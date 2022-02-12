@@ -15,7 +15,7 @@ export async function deserializeCookie(req: Request, res: Response, next: NextF
 
         return next();
     } catch(err: any) {
-        console.log(err.message)
+        console.log(err)
         
         return next();
     }

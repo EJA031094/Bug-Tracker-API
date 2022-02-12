@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { createProject, getProjectById, getPublicProjects } from '../services/project.service';
-import { CreateProjectInput } from '../validation/project.validations';
+import { CreateProjectInput } from '../validation/project.validation';
 
 export async function createProjectHandler(req: Request<{}, {}, CreateProjectInput['body']>, res: Response) {
     try {
@@ -11,7 +11,7 @@ export async function createProjectHandler(req: Request<{}, {}, CreateProjectInp
     
         return res.send(project);
     } catch (err: any) {
-        console.log(err.message);
+        console.log(err);
         return res.status(500).send();
     }
 
@@ -28,9 +28,14 @@ export async function getProjectByIdHandler(req: Request<{}, {}, {}, { projectId
     
         const project = await getProjectById(projectId);
     
+        //project id supplied has no match
+        if(!project) {
+            return res.status(404).send('Error, projectId invalid.');
+        }
+
         return res.send(project);
     } catch(err: any) {
-        console.log(err.message);
+        console.log(err);
         return res.status(500).send();
     }
 }
@@ -42,7 +47,7 @@ export async function getPublicProjectsHandler(req: Request, res: Response) {
 
         return res.send(projects);
     } catch(err: any) {
-        console.log(err.message);
+        console.log(err);
         return res.status(500).send();
     }
 }

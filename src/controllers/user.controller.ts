@@ -10,6 +10,6 @@ export async function createUserHandler(req: Request<{}, {}, CreateUserInput['bo
     } catch(err: any) {
         console.log(err);
         
-        return res.status(400).send(err.message);
+        return res.status(400).send(err);
     }
 }
