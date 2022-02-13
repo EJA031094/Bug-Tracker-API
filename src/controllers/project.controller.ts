@@ -12,6 +12,7 @@ export async function createProjectHandler(req: Request<{}, {}, CreateProjectInp
         return res.send(project);
     } catch (err: any) {
         console.log(err);
+        
         return res.status(500).send();
     }
 
@@ -36,6 +37,7 @@ export async function getProjectByIdHandler(req: Request<{}, {}, {}, { projectId
         return res.send(project);
     } catch(err: any) {
         console.log(err);
+
         return res.status(500).send();
     }
 }
@@ -48,6 +50,7 @@ export async function getPublicProjectsHandler(req: Request, res: Response) {
         return res.send(projects);
     } catch(err: any) {
         console.log(err);
+
         return res.status(500).send();
     }
 }

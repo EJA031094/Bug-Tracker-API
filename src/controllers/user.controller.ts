@@ -9,7 +9,7 @@ export async function createUserHandler(req: Request<{}, {}, CreateUserInput['bo
         return res.status(200).send(user);
     } catch(err: any) {
         console.log(err);
-        
+
         return res.status(400).send(err);
     }
 }
