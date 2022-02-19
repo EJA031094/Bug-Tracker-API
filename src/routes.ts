@@ -1,10 +1,12 @@
 import { Express } from 'express';
-import { createIssueHandler, getProjectIssuesHandler } from './controllers/issue.controller';
+import { createCommentHandler, getCommentsByIssueHandler } from './controllers/comment.controller';
+import { createIssueHandler, getIssueByIdHandler, getProjectIssuesHandler } from './controllers/issue.controller';
 import { createProjectHandler, getProjectByIdHandler, getPublicProjectsHandler } from './controllers/project.controller';
 import { createUserSessionHandler, getUserSessionsHandler } from './controllers/session.controller';
 import { createUserHandler } from './controllers/user.controller';
 import { requireUser } from './middleware/authentication.middleware';
 import { validateResource } from './middleware/validation.middleware';
+import { createCommentValidator } from './validation/comment.validation';
 import { createIssueValidator } from './validation/issue.validation';
 import { createProjectValidator } from './validation/project.validation';
 import { createUserSessionValidator } from './validation/session.validation';
@@ -25,5 +27,10 @@ export function routes(app: Express) {
 
     //issue routes
     app.post('/api/issues/create', validateResource(createIssueValidator), requireUser, createIssueHandler);
-    app.get('/api/issues/getProjectIssues', getProjectIssuesHandler)
+    app.get('/api/issues/getProjectIssues', getProjectIssuesHandler);
+    app.get('/api/issues/getById', getIssueByIdHandler);
+    app.get('/api/issues/getIssueComments', getCommentsByIssueHandler);
+
+    //comment routes
+    app.post('/api/comments/create', validateResource(createCommentValidator), requireUser, createCommentHandler);
 }

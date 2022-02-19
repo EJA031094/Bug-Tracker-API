@@ -33,7 +33,7 @@ export async function deserializeAccessToken(req: Request, res: Response, next: 
     
         const { decoded, expired } = verifyJwt(accessToken);
         const refreshToken = get(req, 'headers.x-refresh');
-    
+
         //user found, set info and call next
         if(decoded) {
             res.locals.user = decoded;

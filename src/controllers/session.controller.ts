@@ -16,7 +16,7 @@ export async function createUserSessionHandler(req: Request<{}, {}, CreateUserSe
 
         setSessionCookies(res, session);
 
-        return res.send();
+        return res.send(user);
     } catch (err: any) {
         console.log(err);
 

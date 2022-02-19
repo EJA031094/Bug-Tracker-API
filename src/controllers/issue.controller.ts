@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createIssue, getProjectIssues } from '../services/issue.service';
+import { addUsernames, createIssue, getIssueById, getProjectIssues } from '../services/issue.service';
 import { getProjectById } from '../services/project.service';
 import { CreateIssueInput } from '../validation/issue.validation';
 
@@ -21,8 +21,27 @@ export async function getProjectIssuesHandler(req: Request<{}, {}, {}, { project
 
         const issues = await getProjectIssues(projectId);
 
-        return res.send(issues);
+        //add username to return object
+        const issuesDetailed = await addUsernames(issues);
+
+        return res.send(issuesDetailed);
     } catch(err) {
+        console.log(err);
+        return res.status(500).send();
+    }
+}
+
+export async function getIssueByIdHandler(req: Request<{}, {}, {}, { issueId: string }>, res: Response) {
+    try {
+        const issue = await getIssueById(req.query.issueId);
+
+        //issue not found by id
+        if(!issue) {
+            return res.status(400).send('Error, given issueId invalid.');
+        }
+
+        return res.send(issue);
+    } catch (err) {
         console.log(err);
         return res.status(500).send();
     }
@@ -44,6 +63,7 @@ export async function createIssueHandler(req: Request<{}, {}, CreateIssueInput['
         if(!confirmProject) {
             return res.status(404).send('Project not found.');
         }
+
         const issue = await createIssue(poster, projectId, name, description, true);
 
         return res.send(issue);
