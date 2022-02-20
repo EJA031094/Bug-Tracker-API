@@ -3,14 +3,14 @@ import { createCommentHandler, getCommentsByIssueHandler } from './controllers/c
 import { createIssueHandler, getIssueByIdHandler, getProjectIssuesHandler } from './controllers/issue.controller';
 import { createProjectHandler, getProjectByIdHandler, getPublicProjectsHandler } from './controllers/project.controller';
 import { createUserSessionHandler, getUserSessionsHandler } from './controllers/session.controller';
-import { createUserHandler } from './controllers/user.controller';
+import { createUserHandler, getUserProfileHandler, logoutUserHandler } from './controllers/user.controller';
 import { requireUser } from './middleware/authentication.middleware';
 import { validateResource } from './middleware/validation.middleware';
-import { createCommentValidator } from './validation/comment.validation';
-import { createIssueValidator } from './validation/issue.validation';
-import { createProjectValidator } from './validation/project.validation';
-import { createUserSessionValidator } from './validation/session.validation';
-import { createUserValidator} from './validation/user.validation';
+import { createCommentValidator } from './models/comment.model';
+import { createIssueValidator } from './models/issue.model';
+import { createProjectValidator } from './models/project.model';
+import { createUserSessionValidator } from './models/session.model';
+import { createUserValidator } from './models/user.model';
 
 export function routes(app: Express) {
     //session routes
@@ -19,6 +19,8 @@ export function routes(app: Express) {
 
     //user routes
     app.post('/api/users/create', validateResource(createUserValidator), createUserHandler);
+    app.post('/api/users/logout', logoutUserHandler);
+    app.post('/api/users/getProfile', getUserProfileHandler);
     
     //project routes
     app.get('/api/projects/getById', getProjectByIdHandler);
