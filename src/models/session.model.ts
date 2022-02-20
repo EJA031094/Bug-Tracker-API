@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { User } from './user.model';
+import { object, string, TypeOf } from 'zod';
 
 export interface Session extends mongoose.Document {
     user: User['_id'];
@@ -20,6 +21,18 @@ const sessionSchema = new mongoose.Schema<Session> (
     }
 );
 
-const SessionModel = mongoose.model<Session>('Session', sessionSchema);
+export const SessionModel = mongoose.model<Session>('Session', sessionSchema);
 
-export default SessionModel;
+//validation for user login request
+export const createUserSessionValidator = object({
+    body: object({
+        username: string({
+            required_error: 'Username is required.',
+        }),
+        password: string({
+            required_error: 'Password is required.',
+        }).min(6, 'Password should be a minimum of 6 characters.')
+    })
+});
+
+export type CreateUserSessionInput = TypeOf<typeof createUserSessionValidator>;

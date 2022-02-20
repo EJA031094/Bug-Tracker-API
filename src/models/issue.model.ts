@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Project } from './project.model';
 import { User } from './user.model';
+import { object, string, TypeOf } from 'zod';
 
 export interface Issue extends mongoose.Document {
     project: Project['_id'];
@@ -25,6 +26,21 @@ const issueSchema = new mongoose.Schema<Issue> (
     }
 );
 
-const IssueModel = mongoose.model<Issue>('Issue', issueSchema);
+export const IssueModel = mongoose.model<Issue>('Issue', issueSchema);
 
-export default IssueModel;
+//validatior for creating an issue
+export const createIssueValidator = object({
+    body: object({
+        projectId: string({
+            required_error: 'An error occured, no project was set as the root of this issue.'
+        }),
+        name: string({
+            required_error: 'Issue name is required.'
+        }).min(6, 'Issue name should be a minimum of 6 characters.'),
+        description: string({
+            required_error: 'Password is required.'
+        }).max(250, 'Please limit your description to 250 characters.')
+    })
+});
+
+export type CreateIssueInput = TypeOf<typeof createIssueValidator>;

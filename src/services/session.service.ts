@@ -1,7 +1,7 @@
 import config from 'config';
 import { Response } from 'express';
 import { FilterQuery, UpdateQuery } from 'mongoose';
-import SessionModel, { Session } from '../models/session.model';
+import { Session, SessionModel } from '../models/session.model';
 import { signJwt } from '../utilities/jwtutil';
 
 export async function createSession(user: string, userAgent: string) {

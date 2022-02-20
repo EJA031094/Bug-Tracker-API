@@ -1,7 +1,7 @@
 import { Request, Response} from 'express';
+import { CreateUserSessionInput } from '../models/session.model';
 import { createSession, getSessions, setSessionCookies } from '../services/session.service';
 import { validateUserPassword } from '../services/user.service';
-import { CreateUserSessionInput } from '../validation/session.validation';
 
 export async function createUserSessionHandler(req: Request<{}, {}, CreateUserSessionInput['body']>, res: Response) {
     try {

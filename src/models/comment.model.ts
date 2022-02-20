@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Issue } from './issue.model';
 import { User } from './user.model';
+import { object, string, TypeOf } from 'zod';
 
 export interface CommentInterface extends mongoose.Document {
     issue: Issue['_id'];
@@ -25,6 +26,18 @@ const commentSchema = new mongoose.Schema<CommentInterface > (
     }
 );
 
-const CommentModel = mongoose.model<CommentInterface >('Comment', commentSchema);
+export const CommentModel = mongoose.model<CommentInterface >('Comment', commentSchema);
 
-export default CommentModel;
+//validator for comment posts
+export const createCommentValidator = object({
+    body: object({
+        issueId: string({
+            required_error: 'An error occured, no issue was set as the root of this comment.'
+        }),
+        body: string({
+            required_error: 'Comment body is required.'
+        }).max(500, 'Comment body should not exceed 500 characters.')
+    })
+});
+
+export type CreateCommentInput = TypeOf<typeof createCommentValidator>;
