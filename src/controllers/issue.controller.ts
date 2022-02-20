@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
+import { CreateIssueInput } from '../models/issue.model';
 import { addUsernames, createIssue, getIssueById, getProjectIssues } from '../services/issue.service';
 import { getProjectById } from '../services/project.service';
-import { CreateIssueInput } from '../validation/issue.validation';
+import { logger } from '../utilities/logger';
 
 export async function getProjectIssuesHandler(req: Request<{}, {}, {}, { projectId: string }>, res: Response) {
     try {
@@ -25,8 +26,8 @@ export async function getProjectIssuesHandler(req: Request<{}, {}, {}, { project
         const issuesDetailed = await addUsernames(issues);
 
         return res.send(issuesDetailed);
-    } catch(err) {
-        console.log(err);
+    } catch(err: any) {
+        logger.log(err);
         return res.status(500).send();
     }
 }
@@ -41,8 +42,8 @@ export async function getIssueByIdHandler(req: Request<{}, {}, {}, { issueId: st
         }
 
         return res.send(issue);
-    } catch (err) {
-        console.log(err);
+    } catch (err: any) {
+        logger.log(err);
         return res.status(500).send();
     }
 }
@@ -68,7 +69,7 @@ export async function createIssueHandler(req: Request<{}, {}, CreateIssueInput['
 
         return res.send(issue);
     } catch (err: any) {
-        console.log(err);
+        logger.log(err);
         return res.status(500).send();
     }
 

@@ -1,8 +1,8 @@
 import { Response, Request } from 'express';
-import { CommentInterface } from '../models/comment.model';
+import { CommentInterface, CreateCommentInput } from '../models/comment.model';
 import { createComment, getCommentsByIssue, getCommentUsernames } from '../services/comment.service';
 import { getIssueById } from '../services/issue.service';
-import { CreateCommentInput } from '../validation/comment.validation';
+import { logger } from '../utilities/logger';
 
 export async function createCommentHandler(req: Request<{}, {}, CreateCommentInput['body']>, res: Response) {
     try {
@@ -21,7 +21,7 @@ export async function createCommentHandler(req: Request<{}, {}, CreateCommentInp
 
         return res.send(comment);
     } catch (err: any) {
-        console.log(err);
+        logger.log(err);
         return res.status(500).send();
     }
 
@@ -29,13 +29,13 @@ export async function createCommentHandler(req: Request<{}, {}, CreateCommentInp
 
 export async function getCommentsByIssueHandler(req: Request<{}, {}, {}, { issueId: string }>, res: Response) {
     try {
-        const commentList: CommentInterface[] = await getCommentsByIssue(req.query.issueId);
+        const commentList: CommentInterface[] | null = await getCommentsByIssue(req.query.issueId);
 
         const comments = await getCommentUsernames(commentList);
 
         return res.send(comments);
-    } catch (err) {
-        console.log(err);
+    } catch (err: any) {
+        logger.log(err);
         return res.status(500).send();
     }
 }

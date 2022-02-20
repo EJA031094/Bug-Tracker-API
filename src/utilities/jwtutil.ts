@@ -5,9 +5,13 @@ const privateKey = config.get<string>('privateKey');
 const publicKey = config.get<string>('publicKey');
 
 export function signJwt(object: Object, options?: jwt.SignOptions | undefined) {
-    const checkOptions = (options !== undefined ? options : null);
-
-    return jwt.sign(object, privateKey, {...checkOptions, algorithm: 'RS256'});
+    try{
+        const checkOptions = (options !== undefined ? options : null);
+    
+        return jwt.sign(object, privateKey, {...checkOptions, algorithm: 'RS256'});
+    } catch(err: any) {
+        throw new Error(err);
+    }
 }
 
 export function verifyJwt(token: string) {

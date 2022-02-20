@@ -1,6 +1,7 @@
 import { Request, Response} from 'express';
 import { CreateUserInput } from '../models/user.model';
 import { createUser } from '../services/user.service';
+import { logger } from '../utilities/logger';
 
 export async function createUserHandler(req: Request<{}, {}, CreateUserInput['body']>, res: Response) {
     try {
@@ -8,7 +9,7 @@ export async function createUserHandler(req: Request<{}, {}, CreateUserInput['bo
 
         return res.status(200).send(user);
     } catch(err: any) {
-        console.log(err);
+        logger.log(err);
 
         return res.status(400).send(err);
     }
@@ -24,7 +25,7 @@ export async function logoutUserHandler(req: Request, res: Response) {
 
         return res.status(200).send();
     } catch(err: any) {
-        console.log(err);
+        logger.log(err);
 
         return res.status(500).send(err);
     }
@@ -34,7 +35,7 @@ export async function getUserProfileHandler(req: Request, res: Response) {
     try {
         return res.status(200).send();
     } catch(err: any) {
-        console.log(err);
+        logger.log(err);
 
         return res.status(500).send(err);
     }

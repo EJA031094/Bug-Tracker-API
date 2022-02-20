@@ -15,28 +15,40 @@ export async function createUser(inputUser: Omit<UserInput, 'passwordConfirmatio
 }
 
 export async function getUser(query: FilterQuery<User>) {
-    return UserModel.findOne(query).lean();
+    try {
+        return UserModel.findOne(query).lean();
+    } catch(err: any) {
+        throw new Error(err);
+    }
 }
 
 export async function validateUserPassword({ username, password }: {username: string; password: string;}) {
-    const user = await UserModel.findOne({ username });
-  
-    if (!user) {
-        return false;
+    try {
+        const user = await UserModel.findOne({ username });
+      
+        if (!user) {
+            return false;
+        }
+      
+        const isValid = await bcrypt.compare(password, user.password).catch(() => false);
+      
+        if (!isValid) {
+            return false;
+        }
+    
+        return omit(user.toJSON(), 'password');
+    } catch(err: any) {
+        throw new Error(err);
     }
-  
-    const isValid = await bcrypt.compare(password, user.password).catch(() => false);
-  
-    if (!isValid) {
-        return false;
-    }
-
-    return omit(user.toJSON(), 'password');
 }
 
 async function hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(config.get<number>('saltWorkFactor'));
-    const hash = await bcrypt.hashSync(password, salt);
-
-    return hash;
+    try {
+        const salt = await bcrypt.genSalt(config.get<number>('saltWorkFactor'));
+        const hash = await bcrypt.hashSync(password, salt);
+    
+        return hash;
+    } catch(err: any) {
+        throw new Error(err);
+    }
 }

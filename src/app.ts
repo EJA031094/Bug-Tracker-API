@@ -1,10 +1,11 @@
 import express from 'express';
 import config from 'config';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import { connect } from './utilities/connect';
 import { routes } from './routes';
 import { deserializeAccessToken, deserializeCookie } from './middleware/authentication.middleware';
+import { logger } from './utilities/logger';
 
 const app = express();
 const corsOptions = {
@@ -27,5 +28,15 @@ app.listen(config.get<string>('portNumber'), async () => {
     await connect();
     routes(app);
 
-    console.log(`Server listening at: ${ config.get<string>('hostName') }:${ config.get<string>('portNumber') }`);
+    logger.info(`Server listening at: ${ config.get<string>('hostName') }:${ config.get<string>('portNumber') }`);
 }); 
+
+//connects to database
+async function connect() {
+    try {
+        await mongoose.connect(config.get<string>('connString'));
+        logger.info('Connected to DB.');
+    } catch {
+        logger.info('Failed to connect to DB.');
+    }
+}

@@ -2,6 +2,7 @@ import { Request, Response} from 'express';
 import { CreateUserSessionInput } from '../models/session.model';
 import { createSession, getSessions, setSessionCookies } from '../services/session.service';
 import { validateUserPassword } from '../services/user.service';
+import { logger } from '../utilities/logger';
 
 export async function createUserSessionHandler(req: Request<{}, {}, CreateUserSessionInput['body']>, res: Response) {
     try {
@@ -18,7 +19,7 @@ export async function createUserSessionHandler(req: Request<{}, {}, CreateUserSe
 
         return res.send(user);
     } catch (err: any) {
-        console.log(err);
+        logger.log(err);
 
         return res.status(500).send();
     }
@@ -26,13 +27,18 @@ export async function createUserSessionHandler(req: Request<{}, {}, CreateUserSe
 
 export async function getUserSessionsHandler(req: Request, res: Response) {
     try {
-        const userId = res.locals.user.user;
+        const userId: string | undefined = res.locals.user.user;
+
+        //no userId
+        if(userId === undefined) {
+            return res.status(404).send();
+        }
 
         const sessions = await getSessions({ user: userId, valid: true });
         
         return res.send(sessions);
     } catch(err: any) {
-        console.log(err);
+        logger.log(err);
         
         return res.status(500).send();
     }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
+import { CreateProjectInput } from '../models/project.model';
 import { createProject, getProjectById, getPublicProjects } from '../services/project.service';
-import { CreateProjectInput } from '../validation/project.validation';
+import { logger } from '../utilities/logger';
 
 export async function createProjectHandler(req: Request<{}, {}, CreateProjectInput['body']>, res: Response) {
     try {
@@ -11,7 +12,7 @@ export async function createProjectHandler(req: Request<{}, {}, CreateProjectInp
     
         return res.send(project);
     } catch (err: any) {
-        console.log(err);
+        logger.log(err);
         
         return res.status(500).send();
     }
@@ -36,7 +37,7 @@ export async function getProjectByIdHandler(req: Request<{}, {}, {}, { projectId
 
         return res.send(project);
     } catch(err: any) {
-        console.log(err);
+        logger.log(err);
 
         return res.status(500).send();
     }
@@ -49,7 +50,7 @@ export async function getPublicProjectsHandler(req: Request, res: Response) {
 
         return res.send(projects);
     } catch(err: any) {
-        console.log(err);
+        logger.log(err);
 
         return res.status(500).send();
     }

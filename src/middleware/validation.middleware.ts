@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AnyZodObject } from 'zod';
+import { logger } from '../utilities/logger';
 
 //tests object versus schema
 export function validateResource(schema: AnyZodObject) {
@@ -12,10 +13,10 @@ export function validateResource(schema: AnyZodObject) {
             });
     
             next();
-        } catch (e: any) {
-            console.log(e.errors)
+        } catch (err: any) {
+            logger.log(err);
             
-            return res.status(400).send(e.errors);
+            return res.status(400).send(err.errors);
         }
     };
 }  

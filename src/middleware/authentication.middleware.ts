@@ -1,9 +1,10 @@
 import config from 'config';
 import { Request, Response, NextFunction } from 'express';
 import { get } from 'lodash';
-import SessionModel from '../models/session.model';
+import { SessionModel } from '../models/session.model';
 import { getUser } from '../services/user.service';
 import { signJwt, verifyJwt } from '../utilities/jwtutil';
+import { logger } from '../utilities/logger';
 
 export async function deserializeCookie(req: Request, res: Response, next: NextFunction) {
     try {
@@ -15,13 +16,12 @@ export async function deserializeCookie(req: Request, res: Response, next: NextF
 
         return next();
     } catch(err: any) {
-        console.log(err)
+        logger.log(err);
         
         return next();
     }
 }
 
-//app-wide middleware for checking access and refresh tokens
 export async function deserializeAccessToken(req: Request, res: Response, next: NextFunction) {
     try {
         const accessToken = get(req, 'headers.authorization', '').replace(/^Bearer\s/, '');
@@ -54,21 +54,25 @@ export async function deserializeAccessToken(req: Request, res: Response, next: 
     
         return next();
     } catch (err: any) {
-        console.log(err);
+        logger.log(err);
 
         return next();
     }
 }
 
-//add to route to forbid resource unless logged in
 export function requireUser(req: Request, res: Response, next: NextFunction) {
-    const user = res.locals.user;
+    try {
+        const user = res.locals.user;
 
-    if (user) {   
-        return next();
+        if (user) {   
+            return next();
+        }
+    
+        return res.sendStatus(403);
+    } catch(err: any) {
+        logger.log(err);
+        return res.sendStatus(500);
     }
-
-    return res.sendStatus(403);
 };
 
 async function refreshAccessToken({ refreshToken }: { refreshToken: string }) {
@@ -82,12 +86,14 @@ async function refreshAccessToken({ refreshToken }: { refreshToken: string }) {
     
         const session = await SessionModel.findById(get(decoded, 'session'));
     
+        //session not found
         if(!session || !session.valid) {
             return false;
         }
     
         const user = await getUser({_id: session.user});
     
+        //user not found
         if(!user) {
             return false;
         }
@@ -97,8 +103,6 @@ async function refreshAccessToken({ refreshToken }: { refreshToken: string }) {
     
         return accessToken;
     } catch (err: any) {
-        console.log(err);
-
-        return false;
+        throw new Error(err);
     }
 }
